@@ -45,7 +45,7 @@ def format_body(sender, body, indent=_("> "), width=WRAP_WIDTH):
     wrapper = TextWrapper(width=width, initial_indent=indent, subsequent_indent=indent)
     # rem: TextWrapper doesn't add the indent on an empty text
     quote = '\n'.join([line.startswith(indent) and indent+line or wrapper.fill(line) or indent for line in body.splitlines()])
-    return ugettext("\n\n%(sender)s wrote:\n%s(body)s\n") % {'sender' : sender, 'body' : quote}
+    return ugettext("\n\n%(sender)s wrote:\n%(body)s\n") % {'sender' : sender, 'body' : quote}
 
 def format_subject(subject):
     """
