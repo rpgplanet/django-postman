@@ -19,12 +19,12 @@ class BasicCommaSeparatedUserField(CharField):
 
     """
     default_error_messages = {
-        'unknown': _("Some usernames are unknown or no more active: {users}."),
-        'max': _("Ensure this value has at most {limit_value} distinct items (it has {show_value})."),
-        'min': _("Ensure this value has at least {limit_value} distinct items (it has {show_value})."),
-        'filtered': _("Some usernames are rejected: {users}."),
-        'filtered_user': _("{user.username}"),
-        'filtered_user_with_reason': _("{user.username} ({reason})"),
+        'unknown': _("Some usernames are unknown or no more active: %(users)s."),
+        'max': _("Ensure this value has at most %(limit_value)s distinct items (it has %(show_value)s."),
+        'min': _("Ensure this value has at least %(limit_value)s distinct items (it has %(show_value)s)."),
+        'filtered': _("Some usernames are rejected: %(users)s."),
+        'filtered_user': _("%(username)s"),
+        'filtered_user_with_reason': _("%(username)s (%(reason)s"),
     }
 
     def __init__(self, max=None, min=None, user_filter=None, *args, **kwargs):
@@ -56,9 +56,9 @@ class BasicCommaSeparatedUserField(CharField):
             return
         count = len(value)
         if self.max and count > self.max:
-            raise ValidationError(self.error_messages['max'].format(limit_value=self.max, show_value=count))
+            raise ValidationError(self.error_messages['max'] % {'limit_value' : self.max, 'show_value' : count})
         if self.min and count < self.min:
-            raise ValidationError(self.error_messages['min'].format(limit_value=self.min, show_value=count))
+            raise ValidationError(self.error_messages['min'] % {'limit_value' : self.min, 'show_value' : count})
 
     def clean(self, value):
         """Check names are valid and filter them."""
@@ -69,7 +69,7 @@ class BasicCommaSeparatedUserField(CharField):
         unknown_names = set(names) ^ set([u.username for u in users])
         errors = []
         if unknown_names:
-            errors.append(self.error_messages['unknown'].format(users=', '.join(unknown_names)))
+            errors.append(self.error_messages['unknown'] % {'users' : ', '.join(unknown_names)})
         if self.user_filter:
             filtered_names = []
             for u in users[:]:
@@ -80,13 +80,13 @@ class BasicCommaSeparatedUserField(CharField):
                         filtered_names.append(
                             self.error_messages[
                                 'filtered_user_with_reason' if reason else 'filtered_user'
-                            ].format(user=u, reason=reason)
+                            ] % {'username' : u.username, 'reason' : reason}
                         )
                 except ValidationError, e:
                     users.remove(u)
                     errors.extend(e.messages)
             if filtered_names:
-                errors.append(self.error_messages['filtered'].format(users=', '.join(filtered_names)))
+                errors.append(self.error_messages['filtered'] % {'users' : ', '.join(filtered_names)})
         if errors:
             raise ValidationError(errors)
         return users

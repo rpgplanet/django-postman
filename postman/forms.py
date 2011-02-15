@@ -61,9 +61,9 @@ class BaseWriteForm(forms.ModelForm):
                 self.fields['recipients'].set_arg(channel)
 
     error_messages = {
-        'filtered': _("Writing to some users is not possible: {users}."),
-        'filtered_user': _("{user.username}"),
-        'filtered_user_with_reason': _("{user.username} ({reason})"),
+        'filtered': _("Writing to some users is not possible: %(users)s."),
+        'filtered_user': _("%(username)s"),
+        'filtered_user_with_reason': _("%(username)s (%(reason)s)"),
     }
     def clean_recipients(self):
         """Check no filter prohibit the exchange."""
@@ -81,13 +81,13 @@ class BaseWriteForm(forms.ModelForm):
                         filtered_names.append(
                             self.error_messages[
                                 'filtered_user_with_reason' if reason else 'filtered_user'
-                            ].format(user=u, reason=reason)
+                            ] % {'reason' : reason, 'username' : u.username}
                         )
                 except forms.ValidationError, e:
                     recipients.remove(u)
                     errors.extend(e.messages)
             if filtered_names:
-                errors.append(self.error_messages['filtered'].format(users=', '.join(filtered_names)))
+                errors.append(self.error_messages['filtered'] % {'users' : ', '.join(filtered_names)})
             if errors:
                 raise forms.ValidationError(errors)
         return recipients

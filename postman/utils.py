@@ -45,7 +45,7 @@ def format_body(sender, body, indent=_("> "), width=WRAP_WIDTH):
     wrapper = TextWrapper(width=width, initial_indent=indent, subsequent_indent=indent)
     # rem: TextWrapper doesn't add the indent on an empty text
     quote = '\n'.join([line.startswith(indent) and indent+line or wrapper.fill(line) or indent for line in body.splitlines()])
-    return ugettext("\n\n{sender} wrote:\n{body}\n").format(sender=sender, body=quote)
+    return ugettext("\n\n%(sender)s wrote:\n%s(body)s\n") % {'sender' : sender, 'body' : quote}
 
 def format_subject(subject):
     """
@@ -54,9 +54,9 @@ def format_subject(subject):
     Matching is case-insensitive.
 
     """
-    str = ugettext("Re: {subject}")
-    pattern = '^' + str.replace('{subject}', '.*') + '$'
-    return subject if re.match(pattern, subject, re.IGNORECASE) else str.format(subject=subject)
+    str = ugettext("Re: %(subject)s")
+    pattern = '^' + str.replace('%(subject)s', '.*') + '$'
+    return subject if re.match(pattern, subject, re.IGNORECASE) else str % {'subject' : subject}
 
 def email(subject_template, message_template, recipient_list, object, action=None):
     """Compose and send an email."""

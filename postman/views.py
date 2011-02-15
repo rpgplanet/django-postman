@@ -268,8 +268,8 @@ def _update(request, field_bit, success_msg, field_value=None, success_url=None)
     if pks or tpks:
         queryset = Message.objects.filter(Q(pk__in=pks) | Q(thread__in=tpks))
         user = request.user
-        recipient_rows = queryset.filter(recipient=user).update(**{'recipient_{0}'.format(field_bit): field_value})
-        sender_rows = queryset.filter(sender=user).update(**{'sender_{0}'.format(field_bit): field_value})
+        recipient_rows = queryset.filter(recipient=user).update(**{'recipient_%s' % field_bit: field_value})
+        sender_rows = queryset.filter(sender=user).update(**{'sender_%s' % field_bit: field_value})
         if not (recipient_rows or sender_rows):
             raise Http404 # abnormal enough, like forged ids
         messages.success(request, success_msg, fail_silently=True)

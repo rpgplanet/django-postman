@@ -115,11 +115,11 @@ def postman_order_by(parser, token):
         tag_name, field_name = token.split_contents()
         field_code = ORDER_BY_MAPPER[field_name.lower()]
     except ValueError:
-        raise TemplateSyntaxError("'{0}' tag requires a single argument".format(token.contents.split()[0]))
+        raise TemplateSyntaxError("'%s' tag requires a single argument" % token.contents.split()[0])
     except KeyError:
         raise TemplateSyntaxError(
-            "'{0}' is not a valid argument to '{1}' tag."
-            " Must be one of: {2}".format(field_name, tag_name, ORDER_BY_MAPPER.keys()))
+            "'%s' is not a valid argument to '%s' tag."
+            " Must be one of: %s" % field_name, tag_name, ORDER_BY_MAPPER.keys())
     return OrderByNode(field_code)
 
 @register.tag
@@ -139,9 +139,9 @@ def postman_unread(parser, token):
     bits = token.split_contents()
     if len(bits) > 1:
         if len(bits) != 3:
-            raise TemplateSyntaxError("'{0}' tag takes no argument or exactly two arguments".format(bits[0]))
+            raise TemplateSyntaxError("'%s' tag takes no argument or exactly two arguments" % bits[0])
         if bits[1] != 'as':
-            raise TemplateSyntaxError("First argument to '{0}' tag must be 'as'".format(bits[0]))
+            raise TemplateSyntaxError("First argument to '%s' tag must be 'as'" % bits[0])
         return InboxCountNode(bits[2])
     else:
         return InboxCountNode()

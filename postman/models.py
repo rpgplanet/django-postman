@@ -226,7 +226,7 @@ class Message(models.Model):
         ordering = ['-sent_at']
 
     def __unicode__(self):
-        return u"{0}>{1}:{2}".format(self.obfuscated_sender, self.obfuscated_recipient, truncate_words(self.subject,5))
+        return u"%s>%s:%s" % (self.obfuscated_sender, self.obfuscated_recipient, truncate_words(self.subject,5))
 
     @models.permalink
     def get_absolute_url(self):
@@ -280,7 +280,7 @@ class Message(models.Model):
         if self.sender:
             return str(self.sender)
         else:
-            return '<{0}>'.format(self.email)
+            return '<%s>' % self.email
     admin_sender.short_description = _("sender")
     admin_sender.admin_order_field = 'sender'
 
@@ -304,7 +304,7 @@ class Message(models.Model):
         if self.recipient:
             return str(self.recipient)
         else:
-            return '<{0}>'.format(self.email)
+            return '<%s>' % self.email
     admin_recipient.short_description = _("recipient")
     admin_recipient.admin_order_field = 'recipient'
 

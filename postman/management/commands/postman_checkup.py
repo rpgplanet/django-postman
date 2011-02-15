@@ -43,7 +43,7 @@ class Command(NoArgsCommand):
                 self.report_errors(c[0], msgs)
         if verbose >= 1:
             self.stdout.write(datetime.datetime.now().strftime("%H:%M:%S ") +
-                ("Number of inconsistencies found: {0}. See details on the error stream.\n".format(count) if count
+                ("Number of inconsistencies found: %s. See details on the error stream.\n" % count if count
                 else "All is correct.\n"))
 
     def report_errors(self, reason, msgs):
